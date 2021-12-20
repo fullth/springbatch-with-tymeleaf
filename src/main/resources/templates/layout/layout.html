@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lagn="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head th:replace="fragments/config :: configFragment" />
+    <body>
+        <div layout:fragment="content" />
+
+        <!-- common script -->
+        <script type="text/javascript" src="/js/tether.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/app.js"></script>
+    </body>
+</html>

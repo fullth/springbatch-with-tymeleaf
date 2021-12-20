@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultag.net.nz/thymeleaf/layout">
+<head th:fragment="configFragment">
+    <!-- common metadata -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- common css -->
+    <link rel="icon" href="/img/favicons.png"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900"  />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" />
+    <link rel="stylesheet" href="/css/jsgrid.min.css" />
+    <link rel="stylesheet" href="/css/jsgrid-theme.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/app.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jsgrid.min.js"></script>
+
+    <!-- contents page title -->
+    <th:block layout:fragment="title"/>
+
+    <!-- contents page css -->
+    <th:block layout:fragment="css"/>
+
+    <!-- contents page script -->
+    <th:block layout:fragment="script"/>
+</head>
+</html>

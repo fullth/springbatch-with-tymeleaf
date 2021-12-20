@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<th:block layout:fragment="title">
+    <title>Batch Report</title>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="content">
+    <body>
+        <section id="admin">
+            <nav th:replace="fragments/sidebar :: sidebarFragment" />
+            <div class="content">
+                <nav th:replace="fragments/topbar :: topbarFragment" />
+                <div class="bottom">
+                    <div class="left">
+                        <b><h1>Batch Report</h1></b>
+                    </div>
+                    <div class="right">
+                    </div>
+                </div>
+                <div id="real">
+                    <div class="wrap">
+                        <section class="app-content"></section>
+                    </div>
+                </div>
+                <div id="jsGrid"></div>
+            </div>
+        </section>
+        <script th:inline="javascript">
+
+            let db = [[ ${statusList} ]];
+            console.log(db);
+
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                height: "700px",
+
+                filtering: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+
+                pageSize: 30,
+                pageButtonCount: 10,
+
+                data: db,
+
+                fields: [
+                    { name: "jobName", type: "text", width: 120, validate: "required", title: "배치작업명"},
+                    { name: "status", type: "number", width: 50, title: "완료상태" },
+                    { name: "startTime", type: "datetime", width: 50, title: "시작시간" },
+                    { name: "endTime", type: "datetime", width: 50, title: "종료시간"},
+                    { name: "exitCode", type: "text", width: 50, title: "종료상태"}
+                ]
+            });
+
+        </script>
+    </body>
+</div>
+</html>
