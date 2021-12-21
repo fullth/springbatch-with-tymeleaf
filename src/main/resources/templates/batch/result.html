@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <th:block layout:fragment="title">
-    <title>Batch Report</title>
+    <title>Batch Report- 중계서버</title>
 </th:block>
 <th:block layout:fragment="script">
 </th:block>
@@ -15,21 +15,52 @@
                 <nav th:replace="fragments/topbar :: topbarFragment" />
                 <div class="bottom">
                     <div class="left">
-                        <b><h1>Batch Report</h1></b>
+                        <b><h1>Batch Report- 중계서버</h1></b>
                     </div>
                     <div class="right">
                     </div>
                 </div>
                 <div id="real">
-                    <div class="wrap">
-                        <section class="app-content"></section>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="icon"><i class="fa fa-video"></i></div>
+                                    <div class="text">
+                                        <h1 th:text="${batchCount}"></h1>
+                                        <p>Batch</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="icon"><i class="fa fa-users"></i></div>
+                                    <div class="text">
+                                        <h1 th:text="${successCount}"></h1>
+                                        <p>COMPLETED</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="icon"><i class="fa fa-envelope"></i></div>
+                                    <div class="text">
+                                        <h1 th:text="${failCount}"></h1>
+                                        <p>FAILED</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="jsGrid"></div>
             </div>
         </section>
         <script th:inline="javascript">
-
             let db = [[ ${statusList} ]];
             console.log(db);
 
@@ -42,20 +73,27 @@
                 sorting: true,
                 paging: true,
 
-                pageSize: 30,
+                pageSize: 40,
                 pageButtonCount: 10,
 
                 data: db,
 
                 fields: [
-                    { name: "jobName", type: "text", width: 120, validate: "required", title: "배치작업명"},
-                    { name: "status", type: "number", width: 50, title: "완료상태" },
-                    { name: "startTime", type: "datetime", width: 50, title: "시작시간" },
-                    { name: "endTime", type: "datetime", width: 50, title: "종료시간"},
-                    { name: "exitCode", type: "text", width: 50, title: "종료상태"}
+                    { name: "jobExecutionId", type: "text", width: 50, align: "center"},
+                    { name: "jobInstanceId", type: "text", width: 50, align: "center"},
+                    { name: "startTime", type: "datetime", width: 50, align: "center"},
+                    { name: "endTime", type: "datetime", width: 50, align: "center"},
+                    { name: "status", type: "number", width: 50, align: "center"},
+                    { name: "exitCode", type: "text", width: 50, align: "center"},
+                    { name: "jobName", type: "text", width: 120, align: "center"},
+                    { name: "jobKey", type: "text", width: 120, align: "center"},
                 ]
             });
 
+            $("#sort").click(function() {
+                var field = $("#sortingField").val();
+                $("#jsGrid").jsGrid("sort", field);
+            });
         </script>
     </body>
 </div>

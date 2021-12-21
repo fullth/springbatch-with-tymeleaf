@@ -16,7 +16,18 @@ public class BatchStatusService {
     }
 
     public List<Batch> findAllJobInformation() {
-        List<Batch> batchStatusList = batchStatusMapper.findAllJobInformation();
-        return batchStatusList;
+        return batchStatusMapper.findAllJobInformation();
+    }
+
+    public int selectFailStatusCount() {
+        return batchStatusMapper.selectFailStatusCount();
+    }
+
+    public int selectCompleteStatusCount() {
+        return batchStatusMapper.selectCompleteStatusCount();
+    }
+
+    public int selectBatchCount() {
+        return batchStatusMapper.selectBatchCount();
     }
 }

@@ -10,27 +10,24 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @RestController
-@RequestMapping("/batch")
-public class BatchMonitorController {
+public class HomeController {
 
     private BatchStatusService batchStatusService;
 
-    public BatchMonitorController(BatchStatusService batchStatusService) {
+    public HomeController(BatchStatusService batchStatusService) {
         this.batchStatusService = batchStatusService;
     }
 
-    @GetMapping("/result")
+    @GetMapping("/")
     public ModelAndView batchResult() {
         ModelAndView modelAndView = new ModelAndView();
 
-        modelAndView.setViewName("batch/result");
+        modelAndView.setViewName("index");
 
-        List<Batch> batchList = batchStatusService.findAllJobInformation();
         int batchCount = batchStatusService.selectBatchCount();
         int successCount = batchStatusService.selectCompleteStatusCount();
         int failCount = batchStatusService.selectFailStatusCount();
 
-        modelAndView.addObject("statusList", batchList);
         modelAndView.addObject("batchCount", batchCount);
         modelAndView.addObject("successCount", successCount);
         modelAndView.addObject("failCount", failCount);
