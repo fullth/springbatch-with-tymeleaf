@@ -22,35 +22,57 @@
                 </div>
                 <div id="real">
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="analytics">
                                 <div class="card">
-                                    <div class="icon"><i class="fa fa-video"></i></div>
+                                    <div class="icon"><i class="fa fa-list-ol"></i></div>
                                     <div class="text">
                                         <h1 th:text="${batchCount}"></h1>
-                                        <p>Batch</p>
+                                        <p>Batch Total Count</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="analytics">
                                 <div class="card">
-                                    <div class="icon"><i class="fa fa-users"></i></div>
+                                    <div class="icon"><i class="fa fa-check"></i></div>
+                                    <div class="text">
+                                        <h1 th:text="${todaySuccessCount}"></h1>
+                                        <p>Today Completed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="icon"><i class="fa fa-times"></i></div>
+                                    <div class="text">
+                                        <h1 th:text="${todayFailCount}"></h1>
+                                        <p>Today Failed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="icon"><i class="fa fa-check"></i></div>
                                     <div class="text">
                                         <h1 th:text="${successCount}"></h1>
-                                        <p>COMPLETED</p>
+                                        <p>Total Completed</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="analytics">
                                 <div class="card">
-                                    <div class="icon"><i class="fa fa-envelope"></i></div>
+                                    <div class="icon"><i class="fa fa-times"></i></div>
                                     <div class="text">
                                         <h1 th:text="${failCount}"></h1>
-                                        <p>FAILED</p>
+                                        <p>Total Failed</p>
                                     </div>
                                 </div>
                             </div>

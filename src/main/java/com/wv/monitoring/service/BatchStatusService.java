@@ -15,19 +15,21 @@ public class BatchStatusService {
         this.batchStatusMapper = batchStatusMapper;
     }
 
-    public List<Batch> findAllJobInformation() {
-        return batchStatusMapper.findAllJobInformation();
-    }
+    /** 배치결과조회 */
+    public List<Batch> findAllJobInformation() { return batchStatusMapper.findAllJobInformation(); }
 
-    public int selectFailStatusCount() {
-        return batchStatusMapper.selectFailStatusCount();
-    }
+    /** 전체배치실패카운트 */
+    public int selectFailStatusCount() { return batchStatusMapper.selectFailStatusCount(); }
 
-    public int selectCompleteStatusCount() {
-        return batchStatusMapper.selectCompleteStatusCount();
-    }
+    /** 당일배치실패카운트 */
+    public int selectTodayFailStatusCount(String time) { return batchStatusMapper.selectTodayFailStatusCount(time); }
 
-    public int selectBatchCount() {
-        return batchStatusMapper.selectBatchCount();
-    }
+    /** 전체배치완료카운트 */
+    public int selectCompleteStatusCount() { return batchStatusMapper.selectCompleteStatusCount(); }
+
+    /** 당일배치완료카운트 */
+    public int selectTodayCompleteStatusCount(String time) { return batchStatusMapper.selectTodayCompleteStatusCount(time); }
+    
+    /** 배치전체수카운트 */
+    public int selectBatchCount() { return batchStatusMapper.selectBatchCount(); }
 }
