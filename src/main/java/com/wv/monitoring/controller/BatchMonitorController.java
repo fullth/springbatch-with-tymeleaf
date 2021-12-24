@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class BatchMonitorController {
         this.batchStatusService = batchStatusService;
     }
 
+    /** 배치 결과 조회 */
     @GetMapping("/result")
     public ModelAndView batchResult() {
         ModelAndView modelAndView = new ModelAndView();
@@ -34,18 +37,37 @@ public class BatchMonitorController {
         System.out.println(formattedTime);
 
         List<Batch> batchList = batchStatusService.findAllJobInformation();
-        int batchCount = batchStatusService.selectBatchCount();
+
         int successCount = batchStatusService.selectCompleteStatusCount();
         int todaySuccessCount = batchStatusService.selectTodayCompleteStatusCount(formattedTime);
+
+        int batchCount = batchStatusService.selectBatchCount();
         int failCount = batchStatusService.selectFailStatusCount();
         int todayFailCount = batchStatusService.selectTodayFailStatusCount(formattedTime);
 
+        int todayBatch = todaySuccessCount + todayFailCount;
+
         modelAndView.addObject("statusList", batchList);
-        modelAndView.addObject("batchCount", batchCount);
+
+        modelAndView.addObject("todayBatchCount", todayBatch);
         modelAndView.addObject("successCount", successCount);
         modelAndView.addObject("todaySuccessCount", todaySuccessCount);
+
+        modelAndView.addObject("batchCount", batchCount);
         modelAndView.addObject("failCount", failCount);
         modelAndView.addObject("todayFailCount", todayFailCount);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/log")
+    public ModelAndView batchLog() throws IOException {
+        ModelAndView modelAndView = new ModelAndView();
+
+        List<String> logList = batchStatusService.readLogFile("");
+
+        modelAndView.setViewName("batch/log");
+        modelAndView.addObject("logList", logList);
 
         return modelAndView;
     }

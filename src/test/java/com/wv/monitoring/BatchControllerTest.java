@@ -1,7 +1,5 @@
 package com.wv.monitoring;
 
-import com.wv.monitoring.mapper.BatchStatusMapper;
-import com.wv.monitoring.service.BatchStatusService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

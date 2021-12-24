@@ -27,8 +27,8 @@
                                 <div class="card">
                                     <div class="icon"><i class="fa fa-list-ol"></i></div>
                                     <div class="text">
-                                        <h1 th:text="${batchCount}"></h1>
-                                        <p>Batch Total Count</p>
+                                        <h1 th:text="${todayBatchCount}"></h1>
+                                        <p>Today Batch</p>
                                     </div>
                                 </div>
                             </div>
@@ -51,6 +51,17 @@
                                     <div class="text">
                                         <h1 th:text="${todayFailCount}"></h1>
                                         <p>Today Failed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="icon"><i class="fa fa-list-ol"></i></div>
+                                    <div class="text">
+                                        <h1 th:text="${batchCount}"></h1>
+                                        <p>Batch Total Count</p>
                                     </div>
                                 </div>
                             </div>
