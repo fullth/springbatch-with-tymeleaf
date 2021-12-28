@@ -35,22 +35,24 @@ public class BatchMonitorController {
         String formattedTime = DATE_FORMAT.format(time);
 
         List<Batch> batchList = batchStatusService.findAllJobInformation();
-
+        // 성공한 배치 카운트
         int successCount = batchStatusService.selectCompleteStatusCount();
         int todaySuccessCount = batchStatusService.selectTodayCompleteStatusCount(formattedTime);
 
+        // 전체 배치 수 카운트
         int batchCount = batchStatusService.selectBatchCount();
+
+        // 실패한 배치 카운트
         int failCount = batchStatusService.selectFailStatusCount();
         int todayFailCount = batchStatusService.selectTodayFailStatusCount(formattedTime);
 
+        // 당일 동작한 배치 카운트
         int todayBatch = todaySuccessCount + todayFailCount;
 
         modelAndView.addObject("statusList", batchList);
-
         modelAndView.addObject("todayBatchCount", todayBatch);
         modelAndView.addObject("successCount", successCount);
         modelAndView.addObject("todaySuccessCount", todaySuccessCount);
-
         modelAndView.addObject("batchCount", batchCount);
         modelAndView.addObject("failCount", failCount);
         modelAndView.addObject("todayFailCount", todayFailCount);

@@ -44,11 +44,12 @@ public class BatchStatusServiceImpl implements BatchStatusService {
     @Override
     public int selectBatchCount() { return batchStatusMapper.selectBatchCount(); }
 
+    /** 배치로그파일 로드 */
     @Override
     public List<String> readLogFile(String fileName) throws IOException {
         BufferedReader bufferedReader = null;
         if(fileName.length() == 0)
-            fileName = "batch_error.log";
+            fileName = "batch_error.log"; // default: error level
         try {
             String filePath = "C:\\WORLDVISION\\JAR\\" + fileName;
             bufferedReader = new BufferedReader(new FileReader(filePath), 16 * 1024);
@@ -70,5 +71,4 @@ public class BatchStatusServiceImpl implements BatchStatusService {
         bufferedReader.close();
         return logList;
     }
-
 }
