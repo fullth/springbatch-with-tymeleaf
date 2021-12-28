@@ -47,8 +47,10 @@ public class BatchStatusServiceImpl implements BatchStatusService {
     @Override
     public List<String> readLogFile(String fileName) throws IOException {
         BufferedReader bufferedReader = null;
+        if(fileName.length() == 0)
+            fileName = "batch_error.log";
         try {
-            String filePath = "C:\\WORLDVISION\\JAR\\batch_error.log";
+            String filePath = "C:\\WORLDVISION\\JAR\\" + fileName;
             bufferedReader = new BufferedReader(new FileReader(filePath), 16 * 1024);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

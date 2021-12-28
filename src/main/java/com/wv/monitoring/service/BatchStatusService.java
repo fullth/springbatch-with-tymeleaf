@@ -26,5 +26,6 @@ public interface BatchStatusService {
     /** 배치전체수카운트 */
     int selectBatchCount();
 
+    /** 배치파일읽기 */
     List<String> readLogFile(String fileName) throws IOException;
 }

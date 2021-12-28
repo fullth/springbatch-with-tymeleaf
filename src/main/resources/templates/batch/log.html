@@ -6,6 +6,8 @@
     <title>Batch Log- 중계서버</title>
 </th:block>
 <th:block layout:fragment="script">
+    <script>
+    </script>
 </th:block>
 <div layout:fragment="content">
     <body>
@@ -23,37 +25,43 @@
                 <div id="real">
                     <div class="row">
                         <div class="col-lg-4">
-                            <div class="analytics">
-                                <div class="card">
-                                    <div class="icon"><i class="fa fa-file"></i></div>
-                                    <div class="text">
-                                        <p>batch.log</p>
+                            <a th:id="fileName" th:href="@{/batch/log/batch.log}">
+                                <div class="analytics">
+                                    <div class="card">
+                                        <div class="icon"><i class="fa fa-file"></i></div>
+                                        <div class="text">
+                                            <p>batch.log</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-lg-4">
-                            <div class="analytics">
-                                <div class="card">
-                                    <div class="icon"><i class="fa fa-file"></i></div>
-                                    <div class="text">
-                                        <p>batch_warning.log</p>
+                            <a th:id="fileName" th:href="@{/batch/log/batch_warn.log}">
+                                <div class="analytics">
+                                    <div class="card">
+                                        <div class="icon"><i class="fa fa-file"></i></div>
+                                        <div class="text">
+                                            <p>batch_warn.log</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-lg-4">
-                            <div class="analytics">
-                                <div class="card">
-                                    <div class="icon"><i class="fa fa-file"></i></div>
-                                    <div class="text">
-                                        <p>batch_error.log</p>
+                            <a th:id="fileName" th:href="@{/batch/log/batch_error.log}">
+                                <div class="analytics">
+                                    <div class="card">
+                                        <div class="icon"><i class="fa fa-file"></i></div>
+                                        <div class="text">
+                                            <p>batch_error.log</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <table>
+                    <table style="background-color: ivory">
                         <tr th:each="log : ${logList}">
                             <td th:text="${log}"></td>
                         </tr>
