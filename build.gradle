@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'war'
 }
 
 group = 'com.wv'
@@ -23,8 +24,13 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 
 test {
     useJUnitPlatform()
+}
+
+bootWar {
+    archiveName("monitoring.war")
 }
