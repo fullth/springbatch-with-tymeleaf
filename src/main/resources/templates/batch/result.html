@@ -112,14 +112,11 @@
                 data: db,
 
                 fields: [
-                    { name: "jobExecutionId", type: "text", width: 50, align: "center"},
-                    { name: "jobInstanceId", type: "text", width: 50, align: "center"},
-                    { name: "startTime", type: "datetime", width: 50, align: "center"},
-                    { name: "endTime", type: "datetime", width: 50, align: "center"},
-                    { name: "status", type: "number", width: 50, align: "center"},
-                    { name: "exitCode", type: "text", width: 50, align: "center"},
-                    { name: "jobName", type: "text", width: 120, align: "center"},
-                    { name: "jobKey", type: "text", width: 120, align: "center"},
+                    { name: "jobExecutionId", title: "SEQ", type: "text", width: 50, align: "center"},
+                    { name: "jobName", title: "NAME",type: "text", width: 150, align: "left"},
+                    { name: "startTime", title: "START", type: "text", width: 130, align: "center"},
+                    { name: "endTime", title: "END", type: "text", width: 130, align: "center"},
+                    { name: "status", title: "STATUS", type: "text", width: 50, align: "center"}
                 ]
             });
 

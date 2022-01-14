@@ -5,6 +5,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Batch {
 
@@ -12,13 +15,15 @@ public class Batch {
     private int jobExecutionId;
 
     private int jobInstanceId;
-    private Date createTime;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp createTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private String status;
     private String exitCode;
     private String jobName;
     private String jobKey;
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public int getJobExecutionId() {
         return jobExecutionId;
@@ -28,15 +33,17 @@ public class Batch {
         return jobInstanceId;
     }
 
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
-    public Date getStartTime() {
+    public Timestamp getStartTime() throws ParseException {
+        //simpleDateFormat.format(startTime);
         return startTime;
     }
 
-    public Date getEndTime() {
+    public Timestamp getEndTime() throws ParseException {
+        //simpleDateFormat.format(endTime);
         return endTime;
     }
 
