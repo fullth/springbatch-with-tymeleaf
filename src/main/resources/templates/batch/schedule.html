@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<th:block layout:fragment="title">
+    <title>Batch Schedule- 중계서버</title>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="content">
+    <body>
+        <section id="admin">
+            <nav th:replace="fragments/sidebar :: sidebarFragment" />
+            <div class="content">
+                <nav th:replace="fragments/topbar :: topbarFragment" />
+                <div class="bottom">
+                    <div class="left">
+                        <b><h1>Batch Schedule- 중계서버</h1></b>
+                    </div>
+                    <div class="right">
+                    </div>
+                </div>
+                <div id="real">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="analytics">
+                                <div class="card">
+                                    <div class="text">
+                                        <p>
+                                            <strong>배치의 스케줄은 cronExpression(크론표현식) 방식으로 설정합니다.</strong><br>
+                                            <strong>크론표현식의 정규표현식은 7개의 각 필드로 구성되어 있으며 각각 초, 분, 시, 일, 월, 요일, 연도입니다.</strong><br>
+                                            <br>
+                                             ex.1) 0 0 0 * * ? : 매일 밤 12시에 <br>
+                                             ex.2) 0 30/30 3-8 * * ? : 매일 밤 12시 30분부터 30분마다 3시에서 8시까지 <br>
+                                            <br>
+                                             * : 모든 값을 뜻합니다. <br>
+                                             ? : 특정한 값이 없음을 뜻합니다. <br>
+                                             - : 범위를 뜻합니다. (예) 월요일에서 수요일까지는 MON-WED로 표현 <br>
+                                             , : 특별한 값일 때만 동작 (예) 월,수,금 MON,WED,FRI <br>
+                                             / : 시작시간 / 단위  (예) 0분부터 매 5분 0/5 <br>
+                                             L : 일에서 사용하면 마지막 일, 요일에서는 마지막 요일(토요일) <br>
+                                             W : 가장 가까운 평일 (예) 15W는 15일에서 가장 가까운 평일 (월 ~ 금)을 찾음 <br>
+                                             # : 몇째주의 무슨 요일을 표현 (예) 3#2 : 2번째주 수요일
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="jsGrid"/>
+                </div>
+            </div>
+        </section>
+        <script th:inline="javascript">
+            let db = [[ ${scheduleList} ]];
+
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                height: "100%",
+
+                filtering: false,
+                editing: true,
+                sorting: true,
+                paging: false,
+                editButton: true,
+
+                data: db,
+
+                updateConfirm: "해당 스케줄을 수정하시겠습니까?",
+                updateButtonTooltip: "Update",
+
+                fields: [
+                    { name: "triggerName", title: "Trigger Name", type: "text",  align: "left", editing: false},
+                    { name: "jobDetail", title: "Job Name", type: "text",  align: "left", editing: false},
+                    { name: "cronExpression", title: "Schedule", type: "text",  align: "center"},
+                    { name: "update", type: "control", deleteButton: false},
+                ]
+            });
+        </script>
+    </body>
+</div>
+</html>
