@@ -1,27 +1,24 @@
 package com.wv.monitoring.controller;
 
-import com.wv.monitoring.repository.batch.Batch;
-import com.wv.monitoring.service.BatchStatusService;
-import com.wv.monitoring.service.XmlParseService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.wv.monitoring.repository.batch.Schedule;
+import com.wv.monitoring.service.XmlParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/batch")
 public class BatchScheduleController {
 
-    private XmlParseService xmlParseService;
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    public BatchScheduleController(XmlParseService xmlParseService) {
-        this.xmlParseService = xmlParseService;
+    private XmlParser xmlParser;
+
+    public BatchScheduleController(XmlParser xmlParser) {
+        this.xmlParser = xmlParser;
     }
 
     /** 배치 결과 조회 */
@@ -31,11 +28,16 @@ public class BatchScheduleController {
 
         modelAndView.setViewName("batch/schedule");
 
-
-        List scheduleList = xmlParseService.batchSchedulerParse("");
+        List<Schedule> scheduleList = xmlParser.batchSchedulerParse("");
 
         modelAndView.addObject("scheduleList", scheduleList);
 
         return modelAndView;
+    }
+
+    @PutMapping("/items")
+    public String updateBatchSchedule(@RequestBody Schedule schedule) {
+        LOGGER.info(schedule.toString());
+        return "test";
     }
 }

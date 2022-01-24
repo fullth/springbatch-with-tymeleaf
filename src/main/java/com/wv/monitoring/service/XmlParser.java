@@ -20,10 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class XmlParseService {
+public class XmlParser {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
+    /** 기본 템플릿 */
     public void xmlParse(String filePath) {
         try {
             File file = new File("C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml");
@@ -45,6 +46,7 @@ public class XmlParseService {
         }
     }
 
+    /** 각 노드의 값을 파싱해야 할 때 */
     private String getTagValue(String sTag, Element element) {
         try {
             String result = element.getElementsByTagName(sTag).item(0).getTextContent();
@@ -56,6 +58,7 @@ public class XmlParseService {
         }
     }
 
+    /** 스케줄러 리스트 파싱 */
     public List batchSchedulerParse(String filePath) {
 
         List scheduleList = new ArrayList<>();
@@ -71,19 +74,19 @@ public class XmlParseService {
             Document document = db.parse(file);
             document.getDocumentElement().normalize();
 
-            LOGGER.info("Root Element :" + document.getDocumentElement().getNodeName());
+            //LOGGER.info("Root Element :" + document.getDocumentElement().getNodeName());
 
             NodeList beanNodeList = document.getElementsByTagName("bean");
-            LOGGER.info("----------------------------");
+            //LOGGER.info("----------------------------");
 
             // 트리거를 수정하는 부분은 별도로 작성
-            for (int temp = 1; temp < beanNodeList.getLength(); temp++) {
-                Node beanNode = beanNodeList.item(temp);
-                LOGGER.info("Current Element : " + beanNode.getNodeName());
+            for (int i = 1; i < beanNodeList.getLength(); i++) {
+                Node beanNode = beanNodeList.item(i);
+                //LOGGER.info("Current Element : " + beanNode.getNodeName());
 
                 if (beanNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) beanNode;
-                    LOGGER.info("id ::: " + eElement.getAttribute("id"));
+                    //LOGGER.info("id ::: " + eElement.getAttribute("id"));
 
                     Map scheduleMap = new HashMap<>();
                     scheduleMap.put("triggerName", eElement.getAttribute("id"));
@@ -93,20 +96,21 @@ public class XmlParseService {
                     Node property2 = propertyNodeList.item(1);
                     try {
                         Element propertyElement1 = (Element) property1;
-                        LOGGER.info("name ::: " + propertyElement1.getAttribute("name"));
-                        LOGGER.info("value ::: " + propertyElement1.getAttribute("value"));
+                        //LOGGER.info("name ::: " + propertyElement1.getAttribute("name"));
+                        //LOGGER.info("value ::: " + propertyElement1.getAttribute("value"));
 
                         Element propertyElement2 = (Element) property2;
-                        LOGGER.info("name ::: " + propertyElement2.getAttribute("name"));
-                        LOGGER.info("ref ::: " + propertyElement2.getAttribute("ref"));
+                        //LOGGER.info("name ::: " + propertyElement2.getAttribute("name"));
+                        //LOGGER.info("ref ::: " + propertyElement2.getAttribute("ref"));
 
+                        scheduleMap.put("idx", i);
                         scheduleMap.put("cronExpression", propertyElement1.getAttribute("value"));
                         scheduleMap.put("jobDetail", propertyElement2.getAttribute("ref"));
 
                         scheduleList.add(scheduleMap);
                     } catch (NullPointerException | ClassCastException exception) {
                     }
-                    System.out.println();
+                    //System.out.println();
                 }
             }
         } catch(IOException | ParserConfigurationException | SAXException e) {

@@ -1,27 +1,26 @@
 package com.wv.monitoring;
 
-import com.wv.monitoring.service.XmlParseService;
+import com.wv.monitoring.service.XmlParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Map;
 
 @SpringBootTest
-public class XmlParseServiceTest {
+public class XmlParserTest {
 
     @Autowired
-    XmlParseService xmlParseService;
+    XmlParser xmlParser;
 
     @Test
     public void parseTest() {
-        xmlParseService.xmlParse("TEST");
+        xmlParser.xmlParse("parseTest");
     }
 
     @Test
     public void batchSchedulerParseTest() {
-        List batchScheduleList = xmlParseService.batchSchedulerParse("TEST");
+        List batchScheduleList = xmlParser.batchSchedulerParse("batchSchedulerParseTest");
         for(Object test : batchScheduleList) {
             System.out.println(test);
         }
