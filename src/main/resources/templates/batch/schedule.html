@@ -76,9 +76,9 @@
                             dataType: "text",
                             url: "/batch/items",
                             data: JSON.stringify(item),
-                        }).done(function (result, status, responseObj) {
+                        }).done(function () {
                             location.reload();
-                        });
+                        })
                     },
                 },
 
@@ -91,7 +91,7 @@
                     { name: "idx", title: "IDX", type: "text",  align: "center", editing: false, width: 10},
                     { name: "triggerName", title: "Trigger", type: "text",  align: "left", editing: false},
                     { name: "jobDetail", title: "Job Detail", type: "text",  align: "left", editing: false},
-                    { name: "cronExpression", title: "Schedule", type: "text",  align: "center"},
+                    { name: "cronExpression", title: "Schedule", type: "text",  align: "center", validate: "required"},
                     { type: "control", deleteButton: false, width: 10}
                 ]
             });

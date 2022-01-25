@@ -7,11 +7,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +35,7 @@ public class XmlParser {
     /** 기본 템플릿 */
     public void xmlParse(String filePath) {
         try {
-            File file = new File("C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml");
+            File file = new File(filePath);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -64,8 +72,7 @@ public class XmlParser {
         List scheduleList = new ArrayList<>();
 
         try {
-            // C:\WORLDVISION\JAR\context-batch-scheduler.xml
-            File file = new File("C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml");
+            File file = new File(filePath);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -74,19 +81,13 @@ public class XmlParser {
             Document document = db.parse(file);
             document.getDocumentElement().normalize();
 
-            //LOGGER.info("Root Element :" + document.getDocumentElement().getNodeName());
-
             NodeList beanNodeList = document.getElementsByTagName("bean");
-            //LOGGER.info("----------------------------");
 
-            // 트리거를 수정하는 부분은 별도로 작성
             for (int i = 1; i < beanNodeList.getLength(); i++) {
                 Node beanNode = beanNodeList.item(i);
-                //LOGGER.info("Current Element : " + beanNode.getNodeName());
 
                 if (beanNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) beanNode;
-                    //LOGGER.info("id ::: " + eElement.getAttribute("id"));
 
                     Map scheduleMap = new HashMap<>();
                     scheduleMap.put("triggerName", eElement.getAttribute("id"));
@@ -96,26 +97,65 @@ public class XmlParser {
                     Node property2 = propertyNodeList.item(1);
                     try {
                         Element propertyElement1 = (Element) property1;
-                        //LOGGER.info("name ::: " + propertyElement1.getAttribute("name"));
-                        //LOGGER.info("value ::: " + propertyElement1.getAttribute("value"));
-
                         Element propertyElement2 = (Element) property2;
-                        //LOGGER.info("name ::: " + propertyElement2.getAttribute("name"));
-                        //LOGGER.info("ref ::: " + propertyElement2.getAttribute("ref"));
 
                         scheduleMap.put("idx", i);
                         scheduleMap.put("cronExpression", propertyElement1.getAttribute("value"));
                         scheduleMap.put("jobDetail", propertyElement2.getAttribute("ref"));
 
                         scheduleList.add(scheduleMap);
-                    } catch (NullPointerException | ClassCastException exception) {
+                    } catch (NullPointerException | ClassCastException e) {
+                        LOGGER.error("ERROR getAttribute()::: " + e.getMessage());
                     }
-                    //System.out.println();
                 }
             }
         } catch(IOException | ParserConfigurationException | SAXException e) {
-            LOGGER.error(e.toString());
+            LOGGER.error(e.getMessage());
         }
         return scheduleList;
+    }
+
+    /**
+     * @MethodName : updateSchedule
+     * @Parameter: String triggerName, String updatedCronExpression
+     *             변경할 트리거의 이름, 변경할 스케줄
+     * */
+    public void updateSchedule(String triggerName, String updatedCronExpression) throws Exception {
+
+        String filePath = "C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml";
+
+        // xml을 파싱하여 dom객체를 생성한다.
+        Document document = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder().parse(new InputSource(filePath));
+
+        // 특정 노드를 찾기 위해 XPath를 이용한다.
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        NodeList nodes = (NodeList) xpath.evaluate("//bean[@id='" + triggerName + "']",
+                document, XPathConstants.NODESET);
+
+        // 전달받은 트리거의 스케줄을 변경한다.
+        if(nodes.getLength() != 0) {
+            try {
+                Node value = nodes.item(0);
+
+                NodeList propertyNodeList = value.getChildNodes();
+                Node property1 = propertyNodeList.item(3);
+
+                Element propertyElement1 = (Element) property1;
+
+                String cronExpression = propertyElement1.getAttribute("value");
+                LOGGER.info("업데이트 전 스케줄 ::: " + cronExpression);
+
+                propertyElement1.setAttribute("value", updatedCronExpression);
+                cronExpression = propertyElement1.getAttribute("value");
+                LOGGER.info("업데이트 후 스케줄 ::: " + cronExpression);
+
+                Transformer xformer = TransformerFactory.newInstance().newTransformer();
+                xformer.transform
+                        (new DOMSource(document), new StreamResult(new File(filePath)));
+            } catch (Exception e) {
+                LOGGER.error("Error occurred during updateSchedule() ::: " + e);
+            }
+        }
     }
 }

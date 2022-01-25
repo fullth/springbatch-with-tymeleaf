@@ -2,6 +2,7 @@ package com.wv.monitoring.controller;
 
 import com.wv.monitoring.repository.batch.Schedule;
 import com.wv.monitoring.service.XmlParser;
+import com.wv.monitoring.util.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class BatchScheduleController {
 
         modelAndView.setViewName("batch/schedule");
 
-        List<Schedule> scheduleList = xmlParser.batchSchedulerParse("");
+        List<Schedule> scheduleList = xmlParser.batchSchedulerParse("C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml");
 
         modelAndView.addObject("scheduleList", scheduleList);
 
@@ -36,8 +37,19 @@ public class BatchScheduleController {
     }
 
     @PutMapping("/items")
-    public String updateBatchSchedule(@RequestBody Schedule schedule) {
+    public StatusCode updateBatchSchedule(@RequestBody Schedule schedule) {
         LOGGER.info(schedule.toString());
-        return "test";
+
+        String updateTriggerName = schedule.getTriggerName();
+        String updateCronExpression = schedule.getCronExpression();
+
+        try {
+            xmlParser.updateSchedule(updateTriggerName, updateCronExpression);
+        } catch (Exception e) {
+            LOGGER.error("스케줄 업데이트 에러 ::: ", e.getMessage());
+            return StatusCode.BAD_REQUEST;
+        }
+
+        return StatusCode.OK;
     }
 }
