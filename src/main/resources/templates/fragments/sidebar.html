@@ -21,11 +21,16 @@
                     <a href="#menu4" class="nav-link expanded"><i class="fa fa-fire"></i>CRM<span class="sub-ico"><i class="fa fa-angle-down"></i></span></a>
                 </li>
                 <li class="sub" id="menu4">
-                    <a href="ui-alerts.html" class="nav-link" data-parent="#menu4">배치현황</a>
-                    <a href="ui-cards.html" class="nav-link" data-parent="#menu4">배치로그</a>
+                    <a href="#" th:onclick="beforeOpenTempAlert()" class="nav-link" data-parent="#menu4">배치현황</a>
+                    <a href="#" th:onclick="beforeOpenTempAlert()" class="nav-link" data-parent="#menu4">배치로그</a>
                 </li>
             </ul>
         </div>
     </div>
+    <script>
+        function beforeOpenTempAlert() {
+            alert('오픈하지 않은 메뉴입니다.')
+        }
+    </script>
 </nav>
 </html>
