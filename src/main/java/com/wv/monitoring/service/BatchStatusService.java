@@ -1,6 +1,7 @@
 package com.wv.monitoring.service;
 
 import com.wv.monitoring.repository.batch.Batch;
+import com.wv.monitoring.repository.batch.Log;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,5 +28,5 @@ public interface BatchStatusService {
     int selectBatchCount();
 
     /** 배치파일읽기 */
-    List<String> readLogFile(String fileName) throws IOException;
+    List<Log> readLogFile(String fileName) throws IOException;
 }

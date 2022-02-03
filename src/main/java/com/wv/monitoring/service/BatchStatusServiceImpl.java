@@ -2,6 +2,7 @@ package com.wv.monitoring.service;
 
 import com.wv.monitoring.mapper.BatchStatusMapper;
 import com.wv.monitoring.repository.batch.Batch;
+import com.wv.monitoring.repository.batch.Log;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -46,7 +47,7 @@ public class BatchStatusServiceImpl implements BatchStatusService {
 
     /** 배치로그파일 로드 */
     @Override
-    public List<String> readLogFile(String fileName) throws IOException {
+    public List<Log> readLogFile(String fileName) throws IOException {
         BufferedReader bufferedReader = null;
         if(fileName.length() == 0)
             fileName = "batch_error.log"; // default: error level
@@ -57,7 +58,7 @@ public class BatchStatusServiceImpl implements BatchStatusService {
             e.printStackTrace();
         }
 
-        List<String> logList = new ArrayList<>();
+        List<Log> logList = new ArrayList<>();
         String str = "";
         while (true) {
             try {
@@ -65,7 +66,9 @@ public class BatchStatusServiceImpl implements BatchStatusService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            logList.add(str);
+            Log log = new Log();
+            log.setLog(str);
+            logList.add(log);
         }
 
         bufferedReader.close();

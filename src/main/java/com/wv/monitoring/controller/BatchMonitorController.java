@@ -1,6 +1,7 @@
 package com.wv.monitoring.controller;
 
 import com.wv.monitoring.repository.batch.Batch;
+import com.wv.monitoring.repository.batch.Log;
 import com.wv.monitoring.service.BatchStatusService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +66,7 @@ public class BatchMonitorController {
     public ModelAndView batchLog() throws IOException {
         ModelAndView modelAndView = new ModelAndView();
 
-        List<String> logList = batchStatusService.readLogFile("");
+        List<Log> logList = batchStatusService.readLogFile("");
 
         modelAndView.setViewName("batch/log");
         modelAndView.addObject("logList", logList);
@@ -78,7 +79,7 @@ public class BatchMonitorController {
     public ModelAndView batchLogByFileName(@PathVariable("fileName") String fileName) throws IOException {
         ModelAndView modelAndView = new ModelAndView();
 
-        List<String> logList = batchStatusService.readLogFile(fileName);
+        List<Log> logList = batchStatusService.readLogFile(fileName);
 
         modelAndView.setViewName("batch/log");
         modelAndView.addObject("logList", logList);
