@@ -29,4 +29,9 @@ public class XmlParserTest {
     public void updateScheduleTest() throws Exception {
         xmlParser.updateSchedule("erpActivityInfoTrigger", "0 40 15 * * ?");
     }
+
+    @Test
+    public void batchTriggerParseTest() {
+        xmlParser.batchTriggerParse("C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml");
+    }
 }

@@ -1,5 +1,6 @@
 package com.wv.monitoring.service;
 
+import com.wv.monitoring.repository.batch.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -157,5 +158,61 @@ public class XmlParser {
                 LOGGER.error("Error occurred during updateSchedule() ::: " + e);
             }
         }
+    }
+
+    /** 트리거 리스트 파싱 */
+    public List batchTriggerParse(String filePath) {
+
+        List<Trigger> triggerList = new ArrayList<>();
+
+        try {
+            File file = new File(filePath);
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            Document document = db.parse(file);
+            document.getDocumentElement().normalize();
+
+            // 최상위 bean tag
+            NodeList beanNodeList = document.getElementsByTagName("bean");
+            Node beanNode = beanNodeList.item(0);
+            // property tag
+            NodeList propertyNodeList = beanNode.getChildNodes();
+            Node propertyNode = propertyNodeList.item(1);
+            // list tag
+            NodeList listNodeList = propertyNode.getChildNodes();
+            Node listNode = listNodeList.item(1);
+            // ref tag list
+            NodeList refNodeList = listNode.getChildNodes();
+
+            int j = 1;
+            for (int i = 0; i < refNodeList.getLength(); i++) {
+
+                Node node = refNodeList.item(i);
+
+                /**
+                 * 공백을 텍스트로 인식하기 때문에 ELEMENT_NODE 해당 타입일 경우에만 속성을 가져옴
+                 * 텍스트 타입은 Node.TEXT_NODE => #text
+                 * */
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element element = (Element) node;
+
+                    Trigger trigger = new Trigger();
+
+                    trigger.setIdx(j);
+                    trigger.setTriggerName(element.getAttribute("bean"));
+
+                    triggerList.add(trigger);
+                    j++;
+                }
+            }
+
+        } catch(IOException | ParserConfigurationException | SAXException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return triggerList;
     }
 }
