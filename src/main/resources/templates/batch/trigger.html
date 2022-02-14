@@ -31,7 +31,7 @@
                                             src/main/resources/egovframework/batch/job 하위의 job 파일과,<br>
                                             context-scheduler-job.xml을 확인 후 등록하시길 바랍니다.<br>
                                             <br>
-                                            등록된 트리거 : <span th:text="${totalTriggerCount}"></span> 개
+                                            등록된 트리거 : <strong><span th:text="${totalTriggerCount}"></span>개</strong>
                                         </p>
                                     </div>
                                 </div>
@@ -53,18 +53,11 @@
 
                     filtering: false,
                     editing: true,
+                    inserting: true,
                     sorting: true,
                     paging: false,
 
-                    updateButtonTooltip: "스케줄 수정",
-                    updateOnResize: true,
-
                     data: data,
-                    controller: data,
-
-                    rowClick: function (args) {
-                        showDetailsDialog("Edit", args.item);
-                    },
 
                     controller: {
                         updateItem: function (item) {
@@ -72,7 +65,17 @@
                                 type: "PUT",
                                 contentType: "application/json",
                                 dataType: "text",
-                                url: "/trigger/items",
+                                url: "/batch/trigger/items",
+                                data: JSON.stringify(item),
+                            }).done(function () {
+                                location.reload();
+                            })
+                        },insertItem: function (item) {
+                            return $.ajax({
+                                type: "POST",
+                                contentType: "application/json",
+                                dataType: "text",
+                                url: "/batch/trigger/items",
                                 data: JSON.stringify(item),
                             }).done(function () {
                                 location.reload();
@@ -83,7 +86,7 @@
                                 type: "DELETE",
                                 contentType: "application/json",
                                 dataType: "text",
-                                url: "/batch/items",
+                                url: "/batch/trigger/items",
                                 data: JSON.stringify(item),
                             }).done(function () {
                                 location.reload();
@@ -91,72 +94,25 @@
                         },
                     },
 
+                    onItemInserted: function (args) {
+                        let previousTriggerName = args.previousItem.triggerName;
+                        alert(previousTriggerName + ' 트리거가 등록되었습니다.');
+                    },
                     onItemUpdated: function (args) {
                         let previousTriggerName = args.previousItem.triggerName;
-                        alert(previousTriggerName + '스케줄을 변경하였습니다.');
+                        alert(previousTriggerName + ' 트리거를 수정하였습니다.');
+                    },
+                    onItemDeleted: function (args) {
+                        let previousTriggerName = args.previousItem.triggerName;
+                        alert(previousTriggerName + ' 트리거를 삭제하였습니다.');
                     },
 
                     fields: [
-                        {name: "idx", title: "IDX", type: "number", width: 5, align: "center", editing: false},
-                        {name: "triggerName", title: "Trigger", type: "text", align: "center", editing: true},
-                        {
-                            type: "control",
-                            modeSwitchButton: false,
-                            editButton: false,
-                            headerTemplate: function () {
-                                return $("<button>").attr("type", "button").text("Add")
-                                    .on("click", function () {
-                                        showDetailsDialog("Add", {});
-                                    });
-                            }
-                        }
+                        {name: "idx", title: "IDX", type: "number", width: 5, align: "center", editing: false, inserting: false},
+                        {name: "triggerName", title: "Trigger", type: "text", align: "left", editing: true, validate: "required"},
+                        {type: "control"}
                     ],
                 });
-
-                $("#detailsDialog").dialog({
-                    autoOpen: false,
-                    width: 400,
-                    close: function () {
-                        $("#detailsForm").validate().resetForm();
-                        $("#detailsForm").find(".error").removeClass("error");
-                    }
-                });
-
-                $("#detailsForm").validate({
-                    rules: {
-                        triggerName: "required",
-                    },
-                    messages: {
-                        triggerName: "Please enter name",
-                    },
-                    submitHandler: function () {
-                        formSubmitHandler();
-                    }
-                });
-
-                var formSubmitHandler = $.noop;
-
-                var showDetailsDialog = function (dialogType, trigger) {
-                    $("#idx").val(trigger.idx);
-                    $("#triggerName").val(trigger.triggerName);
-
-                    formSubmitHandler = function () {
-                        saveClient(client, dialogType === "Add");
-                    };
-
-                    $("#detailsDialog").dialog("option", "title", dialogType + " Client")
-                        .dialog("open");
-                };
-
-                var saveClient = function (client, isNew) {
-                    $.extend(client, {
-                        Name: $("#name").val(),
-                    });
-
-                    $("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", client);
-
-                    $("#detailsDialog").dialog("close");
-                };
             });
         </script>
     </body>

@@ -33,6 +33,8 @@ public class XmlParser {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
+    private static final String SCHEDULER_FILE_PATH = "C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml";
+
     /** 기본 템플릿 */
     public void xmlParse(String filePath) {
         try {
@@ -67,7 +69,7 @@ public class XmlParser {
         }
     }
 
-    /** 스케줄러 리스트 파싱 */
+    /** 스케쥴러 리스트 파싱 */
     public List batchSchedulerParse(String filePath) {
 
         List scheduleList = new ArrayList<>();
@@ -116,30 +118,47 @@ public class XmlParser {
         return scheduleList;
     }
 
-    /**
-     * @MethodName : updateSchedule
-     * @Parameter: String triggerName, String updatedCronExpression
-     *             변경할 트리거의 이름, 변경할 스케줄
-     * */
-    public void updateSchedule(String triggerName, String updatedCronExpression) throws Exception {
-
-        String filePath = "C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml";
-
-        // xml을 파싱하여 dom객체를 생성한다.
+    /** xml을 파싱하여 dom객체를 생성한다. */
+    public Document createDocumentObject(String filePath) throws ParserConfigurationException, IOException, SAXException {
         Document document = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder().parse(new InputSource(filePath));
 
-        // 특정 노드를 찾기 위해 XPath를 이용한다.
+        return document;
+    }
+
+    /** XPath를 이용하여 특정 노드 탐색한다. */
+    public Node searchNodeList(String expression, Document document) throws XPathExpressionException {
         XPath xpath = XPathFactory.newInstance().newXPath();
-        NodeList nodes = (NodeList) xpath.evaluate("//bean[@id='" + triggerName + "']",
+        NodeList nodes = (NodeList) xpath.evaluate(expression,
                 document, XPathConstants.NODESET);
+        LOGGER.info(">>> 리스트 사이즈 : " + nodes.getLength());
+        Node node = nodes.item(0);
+
+        return node;
+    }
+
+    /** xml 데이터 작성 */
+    public void xmlDataTransform(Document document) throws TransformerException {
+        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        xformer.transform
+                (new DOMSource(document), new StreamResult(new File(SCHEDULER_FILE_PATH)));
+    }
+
+    /**
+     * 스케쥴 업데이트
+     * */
+    public void updateSchedule(String triggerName, String updatedCronExpression) throws Exception {
+
+        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+
+        // "//bean[@id='" + triggerName + "']"
+        Node nodes = searchNodeList("//bean[@id='" + triggerName + "']", document);
 
         // 전달받은 트리거의 스케줄을 변경한다.
-        if(nodes.getLength() != 0) {
+        if(nodes != null) {
             try {
-                Node value = nodes.item(0);
 
-                NodeList propertyNodeList = value.getChildNodes();
+                NodeList propertyNodeList = nodes.getChildNodes();
                 Node property1 = propertyNodeList.item(3);
 
                 Element propertyElement1 = (Element) property1;
@@ -151,9 +170,7 @@ public class XmlParser {
                 cronExpression = propertyElement1.getAttribute("value");
                 LOGGER.info("업데이트 후 스케줄 ::: " + cronExpression);
 
-                Transformer xformer = TransformerFactory.newInstance().newTransformer();
-                xformer.transform
-                        (new DOMSource(document), new StreamResult(new File(filePath)));
+                xmlDataTransform(document);
             } catch (Exception e) {
                 LOGGER.error("Error occurred during updateSchedule() ::: " + e);
             }
@@ -161,7 +178,7 @@ public class XmlParser {
     }
 
     /** 트리거 리스트 파싱 */
-    public List batchTriggerParse(String filePath) {
+    public List batchTriggerParse(String filePath) throws Exception {
 
         List<Trigger> triggerList = new ArrayList<>();
 
@@ -175,11 +192,11 @@ public class XmlParser {
             Document document = db.parse(file);
             document.getDocumentElement().normalize();
 
-            // 최상위 bean tag
-            NodeList beanNodeList = document.getElementsByTagName("bean");
-            Node beanNode = beanNodeList.item(0);
+            // 최상위 bean tag TODO 자식노드 탐색 메소드화
+            Node beanNodeList = searchNodeList("//bean", document);
+            
             // property tag
-            NodeList propertyNodeList = beanNode.getChildNodes();
+            NodeList propertyNodeList = beanNodeList.getChildNodes();
             Node propertyNode = propertyNodeList.item(1);
             // list tag
             NodeList listNodeList = propertyNode.getChildNodes();
@@ -192,10 +209,8 @@ public class XmlParser {
 
                 Node node = refNodeList.item(i);
 
-                /**
-                 * 공백을 텍스트로 인식하기 때문에 ELEMENT_NODE 해당 타입일 경우에만 속성을 가져옴
-                 * 텍스트 타입은 Node.TEXT_NODE => #text
-                 * */
+                /** 공백을 텍스트로 인식하기 때문에 ELEMENT_NODE 해당 타입일 경우에만 속성을 가져옴
+                 *  텍스트 타입은 Node.TEXT_NODE => #text */
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element element = (Element) node;
@@ -214,5 +229,60 @@ public class XmlParser {
             LOGGER.error(e.getMessage());
         }
         return triggerList;
+    }
+
+    /** 트리거 추가 */
+    public void addTrigger(Trigger trigger) throws Exception {
+        String triggerName = trigger.getTriggerName();
+
+        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+
+        Node listNode = searchNodeList("//list", document);
+        
+        // 정렬을 위한 들여쓰기 및 개행
+        Node indentNode = document.createTextNode("\t");
+        Node indentNode2 = document.createTextNode("\t\t\t");
+        Node newLineNode = document.createTextNode("\n");
+
+        Node triggerNode = document.createElement("ref");
+
+        Element element = (Element) triggerNode;
+        element.setAttribute("bean", triggerName);
+
+        listNode.appendChild(indentNode);
+        listNode.appendChild(triggerNode);
+        listNode.appendChild(newLineNode);
+        listNode.appendChild(indentNode2);
+
+        xmlDataTransform(document);
+    }
+
+    /** 트리거 업데이트 */
+    public void updateTrigger(Trigger trigger) throws Exception {
+        int beforeUpdateTriggerIdx = trigger.getIdx();
+        String expectedUpdateTriggerName = trigger.getTriggerName();
+
+        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+
+        Node refNode = searchNodeList("//ref[" + beforeUpdateTriggerIdx + "]", document);
+
+        Element element = (Element) refNode;
+        element.setAttribute("bean", expectedUpdateTriggerName);
+
+        xmlDataTransform(document);
+    }
+
+    /** 트리거 삭제 */
+    public void deleteTrigger(Trigger trigger) throws Exception {
+        int beforeUpdateTriggerIdx = trigger.getIdx();
+
+        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+
+        Node listNode = searchNodeList("//list", document);
+        Node refNode = searchNodeList("//ref[" + beforeUpdateTriggerIdx + "]", document);
+
+        listNode.removeChild(refNode);
+
+        xmlDataTransform(document);
     }
 }
