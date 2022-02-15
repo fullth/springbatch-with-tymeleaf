@@ -32,5 +32,6 @@ test {
 }
 
 bootWar {
-    archiveName("monitoring.war")
+    archivesBaseName ='monitoring'
+    archiveFileName = 'monitoring.war'
 }
