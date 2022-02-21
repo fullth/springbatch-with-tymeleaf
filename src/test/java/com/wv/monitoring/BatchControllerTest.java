@@ -22,7 +22,7 @@ public class BatchControllerTest {
     @Test
     void testSelectAllStatus() throws Exception {
         mockMvc.perform(
-                get("/batch/status"))
+                get("/batch/result"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }

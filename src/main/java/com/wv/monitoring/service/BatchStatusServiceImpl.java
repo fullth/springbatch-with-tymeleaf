@@ -3,6 +3,7 @@ package com.wv.monitoring.service;
 import com.wv.monitoring.mapper.BatchStatusMapper;
 import com.wv.monitoring.repository.batch.Batch;
 import com.wv.monitoring.repository.batch.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -16,6 +17,9 @@ import java.util.List;
 public class BatchStatusServiceImpl implements BatchStatusService {
 
     private final BatchStatusMapper batchStatusMapper;
+
+    @Value("${monitoring.log.file-path}")
+    private String logFilePath;
 
     public BatchStatusServiceImpl(BatchStatusMapper batchStatusMapper) {
         this.batchStatusMapper = batchStatusMapper;
@@ -50,9 +54,10 @@ public class BatchStatusServiceImpl implements BatchStatusService {
     public List<Log> readLogFile(String fileName) throws IOException {
         BufferedReader bufferedReader = null;
         if(fileName.length() == 0)
-            fileName = "batch_error.log"; // default: error level
+            // default: error level
+            fileName = "batch_error.log";
         try {
-            String filePath = "C:\\WORLDVISION\\JAR\\" + fileName;
+            String filePath = logFilePath + fileName;
             bufferedReader = new BufferedReader(new FileReader(filePath), 16 * 1024);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

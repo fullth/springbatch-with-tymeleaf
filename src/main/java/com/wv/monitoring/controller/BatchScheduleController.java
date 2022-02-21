@@ -5,6 +5,7 @@ import com.wv.monitoring.service.XmlParser;
 import com.wv.monitoring.util.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,6 +16,9 @@ import java.util.List;
 public class BatchScheduleController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${monitoring.schedule.file-path}")
+    private String scheduleFilePath;
 
     private XmlParser xmlParser;
 
@@ -29,7 +33,7 @@ public class BatchScheduleController {
 
         modelAndView.setViewName("batch/schedule");
 
-        List<Schedule> scheduleList = xmlParser.batchSchedulerParse("C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml");
+        List<Schedule> scheduleList = xmlParser.batchSchedulerParse(scheduleFilePath);
 
         modelAndView.addObject("scheduleList", scheduleList);
 

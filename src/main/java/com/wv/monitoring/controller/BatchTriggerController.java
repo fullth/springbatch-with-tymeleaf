@@ -4,6 +4,7 @@ import com.wv.monitoring.repository.batch.Trigger;
 import com.wv.monitoring.service.XmlParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.xml.sax.SAXException;
@@ -18,9 +19,10 @@ public class BatchTriggerController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    private final XmlParser xmlParser;
+    @Value("${monitoring.schedule.file-path}")
+    private String scheduleFilePath;
 
-    private static final String SCHEDULER_FILE_PATH = "C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml";
+    private final XmlParser xmlParser;
 
     public BatchTriggerController(XmlParser xmlParser) {
         this.xmlParser = xmlParser;
@@ -31,7 +33,7 @@ public class BatchTriggerController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("batch/trigger");
 
-        List<Trigger> triggerList = xmlParser.batchTriggerParse(SCHEDULER_FILE_PATH);
+        List<Trigger> triggerList = xmlParser.batchTriggerParse(scheduleFilePath);
         
         int totalTriggerCount = triggerList.size();
         LOGGER.info("Trigger count >>> " + totalTriggerCount + "개");

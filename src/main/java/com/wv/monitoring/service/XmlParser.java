@@ -3,6 +3,7 @@ package com.wv.monitoring.service;
 import com.wv.monitoring.repository.batch.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +34,8 @@ public class XmlParser {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    private static final String SCHEDULER_FILE_PATH = "C:\\WORLDVISION\\JAR\\context-batch-scheduler.xml";
+    @Value("${monitoring.schedule.file-path}")
+    private String scheduleFilePath;
 
     /** 기본 템플릿 */
     public void xmlParse(String filePath) {
@@ -141,7 +143,7 @@ public class XmlParser {
     public void xmlDataTransform(Document document) throws TransformerException {
         Transformer xformer = TransformerFactory.newInstance().newTransformer();
         xformer.transform
-                (new DOMSource(document), new StreamResult(new File(SCHEDULER_FILE_PATH)));
+                (new DOMSource(document), new StreamResult(new File(scheduleFilePath)));
     }
 
     /**
@@ -149,7 +151,7 @@ public class XmlParser {
      * */
     public void updateSchedule(String triggerName, String updatedCronExpression) throws Exception {
 
-        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+        Document document = createDocumentObject(scheduleFilePath);
 
         // "//bean[@id='" + triggerName + "']"
         Node nodes = searchNodeList("//bean[@id='" + triggerName + "']", document);
@@ -235,7 +237,7 @@ public class XmlParser {
     public void addTrigger(Trigger trigger) throws Exception {
         String triggerName = trigger.getTriggerName();
 
-        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+        Document document = createDocumentObject(scheduleFilePath);
 
         Node listNode = searchNodeList("//list", document);
         
@@ -262,7 +264,7 @@ public class XmlParser {
         int beforeUpdateTriggerIdx = trigger.getIdx();
         String expectedUpdateTriggerName = trigger.getTriggerName();
 
-        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+        Document document = createDocumentObject(scheduleFilePath);
 
         Node refNode = searchNodeList("//ref[" + beforeUpdateTriggerIdx + "]", document);
 
@@ -276,7 +278,7 @@ public class XmlParser {
     public void deleteTrigger(Trigger trigger) throws Exception {
         int beforeUpdateTriggerIdx = trigger.getIdx();
 
-        Document document = createDocumentObject(SCHEDULER_FILE_PATH);
+        Document document = createDocumentObject(scheduleFilePath);
 
         Node listNode = searchNodeList("//list", document);
         Node refNode = searchNodeList("//ref[" + beforeUpdateTriggerIdx + "]", document);
